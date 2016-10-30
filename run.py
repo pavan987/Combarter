@@ -128,9 +128,9 @@ class BuildingSearch(Resource):
 
 
 
-api.add_resource(AptList, '/apt')
-api.add_resource(Apt, '/apt/<apt_id>')
-api.add_resource(BuildingSearch, '/apt/search/<name>')
+api.add_resource(AptList, '/api')
+api.add_resource(Apt, '/api/<apt_id>')
+api.add_resource(BuildingSearch, '/api/search/<name>')
 
 
 if __name__ == '__main__':
