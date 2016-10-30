@@ -198,7 +198,7 @@ class UserJoin(Resource):
                     my_profile['building']=b
             for u in users['users']:
                 if args['user']== u['id']:
-                    my_profile['user']=users
+                    my_profile['user']=u
             join['requests'][user] = {'status': 'approved', "message": "Owner approved to join"}
 
         return {"status":"success","message":"Request sent successfully!"}
