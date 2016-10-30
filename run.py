@@ -112,44 +112,11 @@ my_profile={
 notifications={}
 pool_user_rel={('1','1'):'pending'}
 owner_noti={}
-carpool_requests={
-    '1' : [{
-        "id":1,
-        "status":"pending",
-        "where":"McClinctok Ave",
-        "when":"2016-03-11",
-        "owner":{
-            "id":2,
-            "first_name":"Kartik",
-            "last_name":"Desai"
-        }
-    }]
-}
+carpool_requests={}
 
 temp_carpools = {
     "results" : [
-        {
-            "id":'1',
-            "where":"Viva Technologies, 26th W Street",
-            "when":"2016-30-10",
-            "max_occupancy":3,
-            "owner":{
-                "id":"2",
-                "first_name":"Mehul",
-                "last_name":"Lispov"
-            }
-        },
-        {
-            "id": '2',
-            "where":"2652 Ellendale Place",
-            "when":"2016-02-11",
-            "max_occupancy":5,
-            "owner":{
-                "id":"3",
-                "first_name": "Matt",
-                "last_name": "Damon"
-            }
-        }
+
     ]
 }
 
