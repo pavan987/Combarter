@@ -6,18 +6,25 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-Apartments = {
-  '1':  {'Name': 'MardiGras', 'Address':'720 W 27th Street','City':'Los Angeles','State':'CA','Zip':'90007','image':'http://g.mnp0.com/gimg/34.028389/-118.27'},
-  '2' : {'Name': 'Nupac Apartments', 'Address':'450 W 28th Street','City':'San Diego','State':'CA','Zip':'90090','image':'https://www.nupac.com/img/large-640-400/'},
-  '3' : {'Name': 'First Choice Housing', 'Address':'908 W Adams Blvd','City':'Los Angeles','State':'CA','Zip':'90247','image':'http://stuho.com/Pictures/large/Bcode/1-'},
-  '4' : {'Name': 'Stuho', 'Address':'2650 Orchard Avenue','City':'Pasadena','State':'CA','Zip':'90089','image':'http://stuho.com/Pictures/large/Bcode/1-'},
-  '5' : {'Name': 'Nupac', 'Address':'2656 Ellendale','City':'Sacramento','State':'CA','Zip':'90124','image':'http://g.mnp0.com/gimg/34.028389/-118.27'}
-
+buildings = { [
+{
+    "id":2,
+    "title":"Trilok Leaf",
+    "desc": "Situated on the out-skirts, provides a perfect mix of natural living.",
+    "img":"https://enlightenme.com/images/2014/06/Apartment-vs.-Condo-What%E2%80%99s-the-Difference-670x442.jpg"
+},
+{
+    "id":2,
+    "title":"Trilok Leaf",
+    "desc": "Situated on the out-skirts, provides a perfect mix of natural living.",
+    "img":"https://enlightenme.com/images/2014/06/Apartment-vs.-Condo-What%E2%80%99s-the-Difference-670x442.jpg"
+}
+]
 }
 
 
 def abort_if_apartment_doesnt_exist(apt_id):
-    if apt_id not in Apartments:
+    if apt_id not in buildings:
         abort(404, message="Apartment {} doesn't exist".format(apt_id))
 
 parser = reqparse.RequestParser()
@@ -28,28 +35,30 @@ parser.add_argument('task')
 class Apt(Resource):
     def get(self, apt_id):
         abort_if_apartment_doesnt_exist(apt_id)
-        return Apartments[apt_id]
+        return buildings[apt_id]
 
 # shows a list of all todos, and lets you POST to add new tasks
 class AptList(Resource):
     def get(self):
-        return Apartments
+        return buildings
 
-class AptSearch(Resource):
+class BuildingSearch(Resource):
     def get(self,name):
-        search_results = {}
-        for key,value in Apartments.items():
-            if name in value['Name'] or name in value['Address'] or name in value['Zip'] :
-                flag=1
-                search_results[key]=value
-
+        search_results = {'status':'failure','results':[]}
+        flag = 0
+        for value in buildings:
+            flag=1
+            if name in value['id'] or name in value['title'] or name in value['desc']:
+                search_results["results"].append(value)
+        if flag == 1:
+            search_results['status'] ='success'
         return search_results
 
 
 ##
 api.add_resource(AptList, '/apt')
 api.add_resource(Apt, '/apt/<apt_id>')
-api.add_resource(AptSearch, '/apt/search/<name>')
+api.add_resource(BuildingSearch, '/apt/search/<name>')
 
 
 if __name__ == '__main__':
