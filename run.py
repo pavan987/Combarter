@@ -261,7 +261,15 @@ class BuildingSearch(Resource):
 
 class TempCarPool(Resource):
     def get(self):
-        return temp_carpools
+        count=0
+        parser = reqparse.RequestParser()
+        parser.add_argument('user')
+        args = parser.parse_args()
+        for car in  temp_carpools['results']:
+            status = pooluserstatus(args['user'],car['id'])
+            temp_carpools['results'][count]['status']=status
+            count+=1
+        return temp_carpools;
 
     def post(self):
 
@@ -272,7 +280,7 @@ class TempCarPool(Resource):
         parser.add_argument('owner')
         args = parser.parse_args()
         id = len(temp_carpools['results'])
-        temp_carpools['results'].append({'id':id})
+        temp_carpools['results'].append({'id': str(int(id)+1)})
         for key,value in args.items():
             if key == 'owner':
                 for u in users['users']:
@@ -309,7 +317,7 @@ class CarPoolRequests(Resource):
                 id=0
             else:
                 id = len(owner_noti[id_owner])
-            owner_noti[id_owner].append({'id':id,'id_carpool':id_carpool ,'id_user': id_user})
+            owner_noti[id_owner].append({'id':str(id),'id_carpool':id_carpool ,'id_user': id_user})
             if id_user not in carpool_requests:
                 print id_user
                 carpool_requests[id_user]=[]
@@ -320,7 +328,7 @@ class CarPoolRequests(Resource):
                 print c
                 if c['id'] == id_carpool:
                     print "entered"
-                    carpool_requests[id_user].append({'id':id, 'id_carpool':id_carpool,'status':'pending','where':c['where'],
+                    carpool_requests[id_user].append({'id':str(id), 'id_carpool':id_carpool,'status':'pending','where':c['where'],
                                                       'when':c['when'], 'owner':c['owner'] })
         return { "status":"success", "message":"Request sent successfully!"}
 
@@ -328,17 +336,11 @@ class CarPoolRequests(Resource):
 
 
 
-class PoolUserStatus(Resource):
-
-    def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('id_user')
-        parser.add_argument('id_carpool')
-        args = parser.parse_args()
-        if  (args['id_user'],args['id_carpool']) in pool_user_rel:
-            return {'status':pool_user_rel[(args['id_user'],args['id_carpool'])]}
+def pooluserstatus(a,b):
+        if  (a,b) in pool_user_rel:
+            return pool_user_rel[(a,b)]
         else:
-            return {'status':'None'}
+            return 'None'
 
 
 class OwnerNotifications(Resource):
@@ -398,7 +400,6 @@ api.add_resource(User, '/api/profile')
 api.add_resource(UserJoin, '/api/join')
 api.add_resource(MyProfile, '/api/me')
 api.add_resource(TempCarPool,'/api/tempcarpool')
-api.add_resource(PoolUserStatus,'/api/pooluser')
 api.add_resource(OwnerNotifications,'/api/ownernoti/<user>')
 api.add_resource(OwnerAction,'/api/owneraction')
 api.add_resource(CarPoolRequests,'/api/carpool-request')
