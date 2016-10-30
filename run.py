@@ -95,10 +95,24 @@ join = {'requests':[]}
 my_profile={}
 pool_user_rel={('1','1'):'pending'}
 owner_noti={}
+carpool_requests={
+    '1' : [{
+        "id":1,
+        "status":"pending",
+        "where":"McClinctok Ave",
+        "when":"2016-03-11",
+        "owner":{
+            "id":2,
+            "first_name":"Kartik",
+            "last_name":"Desai"
+        }
+    }]
+}
+
 temp_carpools = {
     "results" : [
         {
-            "id":1,
+            "id":'1',
             "where":"Viva Technologies, 26th W Street",
             "when":"2016-30-10",
             "max_occupancy":3,
@@ -109,7 +123,7 @@ temp_carpools = {
             }
         },
         {
-            "id": 2,
+            "id": '2',
             "where":"2652 Ellendale Place",
             "when":"2016-02-11",
             "max_occupancy":5,
@@ -142,6 +156,7 @@ class AptList(Resource):
 class UserJoin(Resource):
     def get(self):
         return join
+
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('user')
@@ -230,17 +245,16 @@ class TempCarPool(Resource):
             temp_carpools['results'][id][key]=value
         return {'status':'success'}
 
-class PoolUserStatus(Resource):
 
+class CarPoolRequests(Resource):
     def get(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('id_user')
-        parser.add_argument('id_carpool')
+        parser.add_argument('id')
         args = parser.parse_args()
-        if  (args['id_user'],args['id_carpool']) in pool_user_rel:
-            return {'status':pool_user_rel[(args['id_user'],args['id_carpool'])]}
+        if args['id'] in carpool_requests:
+            return {'results' : carpool_requests[args['id']] }
         else:
-            return {'status':'None'}
+            return {}
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -256,8 +270,40 @@ class PoolUserStatus(Resource):
             pool_user_rel[(id_user, id_carpool)]='pending'
             if id_owner not in owner_noti:
                 owner_noti[id_owner]=[]
-            owner_noti[id_owner].append({'id_carpool':id_carpool ,'id_user': id_user})
-            print owner_noti
+                id=0
+            else:
+                id = len(owner_noti[id_owner])
+            owner_noti[id_owner].append({'id':id,'id_carpool':id_carpool ,'id_user': id_user})
+            if id_user not in carpool_requests:
+                print id_user
+                carpool_requests[id_user]=[]
+                id=0
+            else:
+                id = len(carpool_requests[id_user])
+            for c in temp_carpools['results']:
+                print c
+                if c['id'] == id_carpool:
+                    print "entered"
+                    carpool_requests[id_user].append({'id':id, 'id_carpool':id_carpool,'status':'pending','where':c['where'],
+                                                      'when':c['when'], 'owner':c['owner'] })
+        return { "status":"success", "message":"Request sent successfully!"}
+
+
+
+
+
+class PoolUserStatus(Resource):
+
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('id_user')
+        parser.add_argument('id_carpool')
+        args = parser.parse_args()
+        if  (args['id_user'],args['id_carpool']) in pool_user_rel:
+            return {'status':pool_user_rel[(args['id_user'],args['id_carpool'])]}
+        else:
+            return {'status':'None'}
+
 
 class OwnerNotifications(Resource):
     def get(self,user):
@@ -265,6 +311,45 @@ class OwnerNotifications(Resource):
             return owner_noti[user]
         else:
             return {}
+
+class OwnerAction(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('id_owner')
+        parser.add_argument('id_noti')
+        parser.add_argument('action')
+        args = parser.parse_args()
+        action = args['action']
+        owner = args['id_owner']
+        id = args['id_noti']
+        id_user =None
+        id_carpool=None
+        for n in owner_noti[owner]:
+            if n['id'] == id:
+                id_user=n['id_user']
+                id_carpool=n['id_carpool']
+                pool_user_rel[(id_user,id_carpool)]=action
+        count = 0
+        for r in carpool_requests[id_user]:
+            if r['id_carpool'] == id_carpool:
+                carpool_requests[id_user][count]['status'] = action
+        return { "status":"success", "message":"Request sent successfully!"}
+
+        # if action == 'approved':
+        #     count=0
+        #     for c in temp_carpools['results']:
+        #         if c['id']==id_carpool:
+        #             max_oc = temp_carpools['results'][count]['max_occupancy']
+        #             temp_carpools['results'][count]['max_occupancy'] = max_oc +1
+        #
+
+
+
+
+
+
+
+
 
 api.add_resource(AptList, '/api')
 api.add_resource(BuildingSearch, '/api/search/<name>')
@@ -274,7 +359,8 @@ api.add_resource(MyProfile, '/api/me')
 api.add_resource(TempCarPool,'/api/tempcarpool')
 api.add_resource(PoolUserStatus,'/api/pooluser')
 api.add_resource(OwnerNotifications,'/api/<user>/ownernoti')
-
+api.add_resource(OwnerAction,'/api/owneraction')
+api.add_resource(CarPoolRequests,'/api/carpool-request')
 
 if __name__ == '__main__':
     app.run(debug=True)
