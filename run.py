@@ -1,13 +1,24 @@
 from flask import Flask
 from flask_restful import reqparse, abort, Api, Resource
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
-
+'''
 Apartments = {
-    '1': {'Name': 'Mardigras', 'Address':'720 W 27th Street',  'Zip':'90007'},
+    '1': {'Name': 'Mardigras', 'Address':'720 W 27th Street', 'Zip':'90007'},
     '2' : {'Name': '2607', 'Address':'723 W 27th Street', 'Zip':'90047'},
     '3' : {'Name': 'Marditt', 'Address':' 30 W 27th Street', 'Zip':'90067'}
+
+}
+'''
+Apartments = {
+  '1':  {'Name': 'MardiGras', 'Address':'720 W 27th Street','City':'Los Angeles','State':'CA','Zip':'90007','image':'http://g.mnp0.com/gimg/34.028389/-118.27'},
+  '2' : {'Name': 'Nupac Apartments', 'Address':'450 W 28th Street','City':'San Diego','State':'CA','Zip':'90090','image':'https://www.nupac.com/img/large-640-400/'},
+  '3' : {'Name': 'First Choice Housing', 'Address':'908 W Adams Blvd','City':'Los Angeles','State':'CA','Zip':'90247','image':'http://stuho.com/Pictures/large/Bcode/1-'},
+  '4' : {'Name': 'Stuho', 'Address':'2650 Orchard Avenue','City':'Pasadena','State':'CA','Zip':'90089','image':'http://stuho.com/Pictures/large/Bcode/1-'},
+  '5' : {'Name': 'Nupac', 'Address':'2656 Ellendale','City':'Sacramento','State':'CA','Zip':'90124','image':'http://g.mnp0.com/gimg/34.028389/-118.27'}
 
 }
 
