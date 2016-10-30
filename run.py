@@ -62,7 +62,7 @@ buildings = { [
   "state":"CA",
   "zip":"90124",
   "desc": "Affordable Student housing within walking distance to University of Southern California",
-  "img":"https://enlightenme.com/images/2014/06/Apartment-vs.-Condo-What%E2%80%99s-the-Difference-670x442.jpg"
+  "img":"http://stuho.com/Pictures/large/Bcode/1-"
 
 }
 
