@@ -91,7 +91,7 @@ buildings = { 'buildings': [
 ]
 }
 
-join = {'requests':[]}
+join = {'requests':{}}
 my_profile={}
 pool_user_rel={('1','1'):'pending'}
 owner_noti={}
@@ -155,7 +155,15 @@ class AptList(Resource):
 
 class UserJoin(Resource):
     def get(self):
-        return join
+        parser = reqparse.RequestParser()
+        parser.add_argument('user')
+        args = parser.parse_args()
+        user = args['user']
+        if user in join['requests']:
+            return join['requests'][user]
+        else:
+            return {'status':'None',"message":"User not part of apartment"}
+
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -163,20 +171,20 @@ class UserJoin(Resource):
         parser.add_argument('building')
         parser.add_argument('status')
         args = parser.parse_args()
-        for key, value in args.items():
-            if value == None:
-                return {"status":"None","message":"User Not joined"}
-            join[key] = value
-        if args['status']=='approved':
+        user = args['user']
+        status = args['status']
+        if status == 'pending':
+            join['requests'][user]={'status':'pending',"message":"Owner did not approve yet"}
+        if status =='approved':
             for b in buildings['buildings']:
                 if args['building'] == b['id']:
                     my_profile['building']=b
             for u in users['users']:
                 if args['user']== u['id']:
                     my_profile['user']=users
-            return my_profile
+            join['requests'][user] = {'status': 'approved', "message": "Owner approved to join"}
 
-        return {"status":"success","message":"Request sent successfully!"}
+        return {"status":"success","message":"Request sent successfully!",'join':join}
 
 class MyProfile(Resource):
     def get(self):
@@ -358,7 +366,7 @@ api.add_resource(UserJoin, '/api/join')
 api.add_resource(MyProfile, '/api/me')
 api.add_resource(TempCarPool,'/api/tempcarpool')
 api.add_resource(PoolUserStatus,'/api/pooluser')
-api.add_resource(OwnerNotifications,'/api/<user>/ownernoti')
+api.add_resource(OwnerNotifications,'/api/ownernoti/<user>')
 api.add_resource(OwnerAction,'/api/owneraction')
 api.add_resource(CarPoolRequests,'/api/carpool-request')
 
