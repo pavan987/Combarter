@@ -8,20 +8,67 @@ api = Api(app)
 
 buildings = { [
 {
-    "id":2,
-    "title":"Trilok Leaf",
-    "desc": "Situated on the out-skirts, provides a perfect mix of natural living.",
-    "img":"https://enlightenme.com/images/2014/06/Apartment-vs.-Condo-What%E2%80%99s-the-Difference-670x442.jpg"
+  "id":1,
+  "name":"Mardi Gras",
+  "address":"720 W 27th Street",
+  "city":"Los Angeles",
+  "state":"CA",
+  "zip":"90007",
+  "desc": "Situated on the out-skirts, provides a perfect mix of natural living.",
+  "img":"http://g.mnp0.com/gimg/34.028389/-118.27"
 },
+
 {
-    "id":2,
-    "title":"Trilok Leaf",
-    "desc": "Situated on the out-skirts, provides a perfect mix of natural living.",
-    "img":"https://enlightenme.com/images/2014/06/Apartment-vs.-Condo-What%E2%80%99s-the-Difference-670x442.jpg"
-}
-]
+  "id":2,
+  "name":"Nupac Apartments",
+  "address":"450 W 28th Street",
+  "city":"San Diego",
+  "state":"CA",
+  "zip":"90090",
+  "desc": "Affordable Student housing within walking distance to University of Southern California",
+  "img":"https://www.nupac.com/img/large-640-400/"
+
+},
+
+{
+  "id":3,
+  "name":"First Choice Hosuing",
+  "address":"908 W Adams Blvd",
+  "city":"Los Angeles",
+  "state":"CA",
+  "zip":"90247",
+  "desc": "First Choice Housing Association provides quality accommodation solutions for students",
+  "img":"http://stuho.com/Pictures/large/Bcode/1-"
+
+},
+
+{
+  "id":4,
+  "name":"Stuho",
+  "address":"2650 Orhchard Avenue",
+  "city":"Pasadena",
+  "state":"CA",
+  "zip":"90089",
+  "desc": "We offer all types of USC Student Housing: Apartments, Houses, Rooms at affordable rates",
+  "img":"http://stuho.com/Pictures/large/Bcode/1-"
+
+},
+
+{
+  "id":5,
+  "name":"Nupac Apartments",
+  "address":"2656 Ellendale",
+  "city":"Sacramento",
+  "state":"CA",
+  "zip":"90124",
+  "desc": "Affordable Student housing within walking distance to University of Southern California",
+  "img":"https://enlightenme.com/images/2014/06/Apartment-vs.-Condo-What%E2%80%99s-the-Difference-670x442.jpg"
+
 }
 
+
+]
+}
 
 def abort_if_apartment_doesnt_exist(apt_id):
     if apt_id not in buildings:
