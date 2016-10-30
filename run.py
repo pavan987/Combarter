@@ -93,6 +93,8 @@ buildings = { 'buildings': [
 
 join = {'requests':[]}
 my_profile={}
+pool_user_rel={('1','1'):'pending'}
+owner_noti={}
 temp_carpools = {
     "results" : [
         {
@@ -226,17 +228,53 @@ class TempCarPool(Resource):
                     if value == u['id']:
                         value = {'id':u['id'],'firstname':u['first_name'],'last_name':u['last_name']}
             temp_carpools['results'][id][key]=value
-        return
+        return {'status':'success'}
 
+class PoolUserStatus(Resource):
 
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('id_user')
+        parser.add_argument('id_carpool')
+        args = parser.parse_args()
+        if  (args['id_user'],args['id_carpool']) in pool_user_rel:
+            return {'status':pool_user_rel[(args['id_user'],args['id_carpool'])]}
+        else:
+            return {'status':'None'}
+
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('id_user')
+        parser.add_argument('id_carpool')
+        parser.add_argument('id_owner')
+        parser.add_argument('status')
+        args = parser.parse_args()
+        id_user = args['id_user']
+        id_carpool = args['id_carpool']
+        id_owner = args['id_owner']
+        if args['status'] == 'join':
+            pool_user_rel[(id_user, id_carpool)]='pending'
+            if id_owner not in owner_noti:
+                owner_noti[id_owner]=[]
+            owner_noti[id_owner].append({'id_carpool':id_carpool ,'id_user': id_user})
+            print owner_noti
+
+class OwnerNotifications(Resource):
+    def get(self,user):
+        if user in owner_noti:
+            return owner_noti[user]
+        else:
+            return {}
 
 api.add_resource(AptList, '/api')
-api.add_resource(Apt, '/api/<apt_id>')
 api.add_resource(BuildingSearch, '/api/search/<name>')
 api.add_resource(User, '/api/profile')
 api.add_resource(UserJoin, '/api/join')
 api.add_resource(MyProfile, '/api/me')
 api.add_resource(TempCarPool,'/api/tempcarpool')
+api.add_resource(PoolUserStatus,'/api/pooluser')
+api.add_resource(OwnerNotifications,'/api/<user>/ownernoti')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
