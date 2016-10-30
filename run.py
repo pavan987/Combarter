@@ -8,12 +8,22 @@ api = Api(app)
 
 
 
-users = {
+users = { 'users': [
+    {
     "id":'1',
     "first_name":"Sherlock",
     "last_name":"Holmes",
     "email":"sherlock@example.com",
     "apt":"Apt 23-47"
+    },
+    {
+    "id":'2',
+    "first_name":"Pavan",
+    "last_name":"gondhi",
+    "email":"gondhi@ysc.com",
+    "apt":"Apt 43-44"
+    }
+    ]
 }
 
 
@@ -81,10 +91,9 @@ buildings = { 'buildings': [
 ]
 }
 
-join = {}
+join = {'requests':[]}
 my_profile={}
-
-temp_carpool = {
+temp_carpools = {
     "results" : [
         {
             "id":1,
@@ -139,14 +148,16 @@ class UserJoin(Resource):
         args = parser.parse_args()
         for key, value in args.items():
             if value == None:
-                return {"status":"failure","message":"Check all parameters user, building, status are sent "}
+                return {"status":"None","message":"User Not joined"}
             join[key] = value
         if args['status']=='approved':
             for b in buildings['buildings']:
                 if args['building'] == b['id']:
                     my_profile['building']=b
+            for u in users['users']:
+                if args['user']== u['id']:
                     my_profile['user']=users
-                    return my_profile
+            return my_profile
 
         return {"status":"success","message":"Request sent successfully!"}
 
@@ -160,16 +171,21 @@ class User(Resource):
 
     def post(self):
         parser = reqparse.RequestParser()
+        parser.add_argument('id')
         parser.add_argument('first_name')
         parser.add_argument('last_name')
         parser.add_argument('email')
         parser.add_argument('apt')
         args = parser.parse_args()
-        print args
-        for key,value in args.items():
-            if value:
-                users[key]=value
-        return {"status":"success"}
+        count=0
+        for i in users['users']:
+            if args['id'] == i['id']:
+                for key,value in args.items():
+                    if value:
+                        users['users'][count][key]=value
+                return {"status": "success"}
+            count += 1
+
 
 
 class BuildingSearch(Resource):
@@ -190,6 +206,28 @@ class BuildingSearch(Resource):
             search_results['status'] ='success'
         return search_results
 
+class TempCarPool(Resource):
+    def get(self):
+        return temp_carpools
+
+    def post(self):
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('where')
+        parser.add_argument('when')
+        parser.add_argument('max_occupancy')
+        parser.add_argument('owner')
+        args = parser.parse_args()
+        id = len(temp_carpools['results'])
+        temp_carpools['results'].append({'id':id})
+        for key,value in args.items():
+            if key == 'owner':
+                for u in users['users']:
+                    if value == u['id']:
+                        value = {'id':u['id'],'firstname':u['first_name'],'last_name':u['last_name']}
+            temp_carpools['results'][id][key]=value
+        return
+
 
 
 api.add_resource(AptList, '/api')
@@ -198,5 +236,7 @@ api.add_resource(BuildingSearch, '/api/search/<name>')
 api.add_resource(User, '/api/profile')
 api.add_resource(UserJoin, '/api/join')
 api.add_resource(MyProfile, '/api/me')
+api.add_resource(TempCarPool,'/api/tempcarpool')
+
 if __name__ == '__main__':
     app.run(debug=True)
