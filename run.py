@@ -92,7 +92,24 @@ buildings = { 'buildings': [
 }
 
 join = {'requests':{}}
-my_profile={}
+my_profile={
+    "user" : {
+    "id" : 1,
+    "first_name": "Rahul",
+    "last_name": "Desai",
+    "email": "rahul@example.com",
+    "apt" : "Apt x"
+},
+"building":{
+    "id":2,
+    "title":"Trilok Leaf",
+    "desc": "Situated on the out-skirts, provides a perfect mix of natural living.",
+    "img":"https://enlightenme.com/images/2014/06/Apartment-vs.-Condo-What%E2%80%99s-the-Difference-670x442.jpg"
+}
+}
+
+
+
 pool_user_rel={('1','1'):'pending'}
 owner_noti={}
 carpool_requests={
@@ -355,7 +372,12 @@ class OwnerAction(Resource):
 
 
 
-
+class Notifications(Resource):
+    def get(self,user):
+        if user in notifications:
+            return {'results': notifications[user]}
+        else:
+            return {'results': []}
 
 
 
@@ -369,6 +391,7 @@ api.add_resource(PoolUserStatus,'/api/pooluser')
 api.add_resource(OwnerNotifications,'/api/ownernoti/<user>')
 api.add_resource(OwnerAction,'/api/owneraction')
 api.add_resource(CarPoolRequests,'/api/carpool-request')
+api.add_resource(Notifications,'/api/notifications/<user>')
 
 if __name__ == '__main__':
     app.run(debug=True)
