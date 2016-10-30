@@ -109,7 +109,7 @@ my_profile={
 }
 
 
-
+notifications={}
 pool_user_rel={('1','1'):'pending'}
 owner_noti={}
 carpool_requests={
@@ -192,6 +192,9 @@ class UserJoin(Resource):
         status = args['status']
         if status == 'pending':
             join['requests'][user]={'status':'pending',"message":"Owner did not approve yet"}
+            if user not in notifications:
+                notifications[user]=[]
+            notifications[user].append({'category':'Apartment_Request', 'message':'Pending Request'})
         if status =='approved':
             for b in buildings['buildings']:
                 if args['building'] == b['id']:
@@ -209,7 +212,15 @@ class MyProfile(Resource):
 
 class User(Resource):
     def get(self):
-        return users
+        parser = reqparse.RequestParser()
+        parser.add_argument('user')
+        args = parser.parse_args()
+        count=0
+        for i in users['users']:
+            if args['user'] == i['id']:
+                return users['users'][count]
+            count +=1
+
 
     def post(self):
         parser = reqparse.RequestParser()
