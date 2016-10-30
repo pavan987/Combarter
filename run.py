@@ -277,7 +277,7 @@ class TempCarPool(Resource):
             if key == 'owner':
                 for u in users['users']:
                     if value == u['id']:
-                        value = {'id':u['id'],'firstname':u['first_name'],'last_name':u['last_name']}
+                        value = {'id':u['id'],'first_name':u['first_name'],'last_name':u['last_name']}
             temp_carpools['results'][id][key]=value
         return {'status':'success'}
 
