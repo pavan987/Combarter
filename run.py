@@ -184,7 +184,7 @@ class UserJoin(Resource):
                     my_profile['user']=users
             join['requests'][user] = {'status': 'approved', "message": "Owner approved to join"}
 
-        return {"status":"success","message":"Request sent successfully!",'join':join}
+        return {"status":"success","message":"Request sent successfully!"}
 
 class MyProfile(Resource):
     def get(self):
