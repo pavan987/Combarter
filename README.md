@@ -1,8 +1,13 @@
 # Combarter
 
-Combarter is a community based app implementing the tradition barter system in the current generation.
+![alt text](https://scontent-lax3-1.xx.fbcdn.net/v/t1.0-9/14937275_1204318736295664_1563971342943133727_n.jpg?oh=1cac85b05aa770bf71ced7b60b566f6c&oe=5A679D22)
 
 Combarter is a community-based app implementing the tradition barter system in the current generation. The Vision is to reach this app to every apartment community, hoping it would become an efficient collaborative platform for all the residents of the community. We have taken the efficient approach for the resident's enrollment, strictly restricting to only the residents and no strangers, unlike location based applications. Only the verified residents of the community will be members of the group which is created for each apartment.
+
+# Implementation
+This is the backend code repo, the front end repo links are below -
+https://bitbucket.org/nitin_surana/myneighbourhood_front  ( Frontend Web)
+https://github.com/Niranjan-B/TrojanHacks ( Android ) 
 
 We are planning to launch several features to address the daily needs of the residents. Every need we are trying to address will be laid on in an Ask-Get-Reward fashion which is a typical barter system. Thus, enabling a friendly transaction mechanism among the residents rather than a commercial transaction.
 
