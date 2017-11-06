@@ -1,4 +1,4 @@
-#Combarter
+# Combarter
 
 Combarter is a community based app implementing the tradition barter system in the current generation.
 
